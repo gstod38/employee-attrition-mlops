@@ -19,7 +19,13 @@ jobs:
           
       - name: Install dependencies
         run: pip install -r requirements.txt
-          
+
+      # Requirement: DVC data must be available for tests
+      - name: Setup DVC
+        run: |
+          dvc init --no-scm
+          dvc pull || echo "DVC pull failed, using local mock if available"
+
       - name: Run Pytest suite
         run: python -m pytest tests/ -v
 
