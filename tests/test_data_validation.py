@@ -1,9 +1,14 @@
 import pytest
 import pandas as pd
 
+DATA_PATH = "data/WA_Fn-UseC_-HR-Employee-Attrition.csv"
+
 @pytest.fixture
 def raw_data():
-    return pd.read_csv("data/WA_Fn-UseC_-HR-Employee-Attrition.csv")
+    """Logic to load data or skip if not available in CI"""
+    if not os.path.exists(DATA_PATH):
+        pytest.skip(f"Dataset not found at {DATA_PATH}. Skipping data validation.")
+    return pd.read_csv(DATA_PATH)
 
 def test_column_presence(raw_data):
     """Test 7: Check for essential columns"""
