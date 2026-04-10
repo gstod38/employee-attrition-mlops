@@ -8,6 +8,8 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score
 import os
 import sys
 
+from src.preprocessing import preprocess_data
+
 def load_config(config_path="configs/config.yaml"):
     with open(config_path, "r") as f:
         return yaml.safe_load(f)
@@ -21,12 +23,18 @@ def train_model():
     with mlflow.start_run():
         # DATA FALLBACK LOGIC
         path = config['data']['processed_path']
+        
+        is_ci_mode = False
         if not os.path.exists(path):
             path = "data/ci_sample.csv"
+            is_ci_mode = True
             print(f"Running in CI mode with sample data: {path}")
 
         # 1. Load Data
         df = pd.read_csv(path)
+        # 2. Preprocess Data
+        df = preprocess_data(df)
+        
         X = df.drop(columns=[config['train']['target_column']])
         y = df[config['train']['target_column']]
         
@@ -57,9 +65,11 @@ def train_model():
         mlflow.log_metrics(metrics)
         mlflow.sklearn.log_model(model, "model")
         
-        # REQUIREMENT: Exit with error if performance is too low (unless using sample)
-        if acc < 0.6 and "ci_sample" not in path:
-            print(f"Performance too low: {acc}")
+        # Exit with error if performance is too low
+        threshold = 0.4 if is_ci_mode else 0.7
+        
+        if acc < threshold:
+            print(f"Performance too low: {acc}. Requirement not met.")
             sys.exit(1)
 
         print(f"Run complete. Metrics: {metrics}")
