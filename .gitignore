@@ -11,3 +11,7 @@ models/
 __pycache__/
 .venv/
 .DS_Store
+
+# 4. MLflow
+mlruns/
+mlflow.db

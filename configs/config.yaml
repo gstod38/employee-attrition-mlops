@@ -1,16 +1,17 @@
-# Data Handling
-pandas>=2.2.2
-numpy>=1.26.4
-pyyaml>=6.0.1
+# Data Paths
+data:
+  raw_path: "data/WA_Fn-UseC_-HR-Employee-Attrition.csv"
+  processed_path: "data/processed_attrition.csv"
+  test_size: 0.2
+  random_state: 42
 
-# Machine Learning
-scikit-learn>=1.5.0
-scipy>=1.13.0
+# Training Hyperparameters
+train:
+  model_type: "random_forest"
+  n_estimators: 250
+  max_depth: 30
+  target_column: "Attrition"
 
-# MLOps & Tracking
-dvc>=3.50.0
-mlflow>=2.12.0
-evidently>=0.4.20
-
-# Testing
-pytest>=8.0.0
+# Tracking
+mlflow:
+  experiment_name: "Employee-Attrition-Analysis"
