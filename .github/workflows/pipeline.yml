@@ -18,7 +18,7 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
       - name: Run Pytest suite
-        run: python -m pytest tests/ -v
+        run: PYTHONPATH=. python -m pytest tests/ -v
 
   train:
     needs: test
@@ -32,4 +32,6 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
       - name: Run Training Pipeline
+        env:
+          PYTHONPATH: .
         run: python src/train.py
