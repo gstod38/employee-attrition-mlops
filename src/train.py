@@ -23,14 +23,13 @@ def train_model():
     with mlflow.start_run():
         path = config['data']['processed_path']
         
-        # Check if we need to use the CI sample
         if not os.path.exists(path):
             path = "data/ci_sample.csv"
             print(f"CI Mode: Using {path}")
 
         df = pd.read_csv(path)
         
-        # FIX: Passing both df AND config to match your function signature
+        
         df = preprocess_data(df, config)
         
         X = df.drop(columns=[config['train']['target_column']])
