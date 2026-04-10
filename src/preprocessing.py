@@ -7,25 +7,28 @@ def load_config(config_path="configs/config.yaml"):
         return yaml.safe_load(f)
 
 def preprocess_data(df, config):
-    """
-    Cleans the IBM HR dataset based on project requirements.
-    """
-    # 1. Target Encoding: 'Yes' -> 1, 'No' -> 0
+    # 1: Create a deep copy so we don't mutate the original input
+    data = df.copy()
+    
     target = config['train']['target_column']
-    if target in df.columns:
-        df[target] = df[target].apply(lambda x: 1 if x == 'Yes' else 0)
     
-    # 2. Feature Selection: Drop columns with zero variance (useless for ML)
-    # These columns are the same for every single row in this dataset
-    useless_cols = ['EmployeeCount', 'Over18', 'StandardHours']
-    df = df.drop(columns=[col for col in useless_cols if col in df.columns])
+    # Encode target
+    if target in data.columns:
+        data[target] = data[target].map({'Yes': 1, 'No': 0})
     
-    # 3. Handle Categorical Variables (One-Hot Encoding)
-    # We'll use pandas get_dummies for simplicity
-    categorical_cols = df.select_dtypes(include=['object']).columns
-    df = pd.get_dummies(df, columns=categorical_cols, drop_first=True)
+    # 2: Missing value handling for numeric columns
+    numeric_cols = data.select_dtypes(include=['number']).columns
+    for col in numeric_cols:
+        data[col] = data[col].fillna(data[col].median())
+        
+    # Drop constant columns (requirement for your tests)
+    cols_to_drop = ['EmployeeCount', 'Over18', 'StandardHours', 'EmployeeNumber']
+    data = data.drop(columns=[c for c in cols_to_drop if c in data.columns])
     
-    return df
+    # One-hot encoding for categorical variables
+    data = pd.get_dummies(data)
+    
+    return data
 
 if __name__ == "__main__":
     # Load config
