@@ -1,0 +1,10 @@
+#MLOps data/models:
+data/
+models/
+*.csv
+*.pkl
+
+__pycache__/
+.venv/
+
+.DS_Store
