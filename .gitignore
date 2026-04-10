@@ -1,10 +1,13 @@
-#MLOps data/models:
-data/
+# 1. Ignore large data and model files
+/data/WA_Fn-UseC_-HR-Employee-Attrition.csv
 models/
 *.csv
 *.pkl
 
+# 2. DO NOT ignore DVC pointer files (The Fix)
+!*.dvc
+
+# 3. Standard Python/OS ignores
 __pycache__/
 .venv/
-
 .DS_Store
