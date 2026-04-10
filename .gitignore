@@ -3,7 +3,7 @@
 models/
 *.csv
 *.pkl
-
+!data/ci_sample.csv
 # 2. DO NOT ignore DVC pointer files (The Fix)
 !*.dvc
 
